@@ -23,14 +23,15 @@ import javax.json.JsonReader;
 import javax.json.JsonReaderFactory;
 
 public class DiceWebAPI {
-	private static final String WebUri = "https://www.999dice.com/api/web.aspx";
+	private static String mirror = "999dice";
+	private static final String webUri = "https://www." + mirror + ".com/api/web.aspx";
 	private static final long GuessSpan = 1000000L;
 	private static final BigDecimal HousePayout = new BigDecimal("0.999");
 	public static final String CURRENCY_CODE_BITCOIN = "btc";
 	public static final String CURRENCY_CODE_DOGE = "doge";
 	public static final String CURRENCY_CODE_LITECOIN = "ltc";
 	public static final String CURRENCY_CODE_ETHER = "eth";
-	private static String currentCurrencyCode = "btc";
+	private static String currentCurrencyCode = "doge";
 	private static final JsonReaderFactory jsonReaderFactoryInstance = Json.createReaderFactory((Map)null);
 
 	public DiceWebAPI() {
@@ -44,9 +45,13 @@ public class DiceWebAPI {
 		DiceWebAPI.currentCurrencyCode = currentCurrencyCode;
 	}
 
+	public static void setMirror(String mirror) {
+		DiceWebAPI.mirror = mirror;
+	}
+
 	private static DiceResponse Request(Map<String, String> formData, DiceResponse response) {
 		try {
-			URL url = new URL(WebUri);
+			URL url = new URL(webUri);
 			StringBuilder sb = new StringBuilder();
 			Iterator var4 = formData.entrySet().iterator();
 
@@ -288,6 +293,7 @@ public class DiceWebAPI {
 		x.put("Compact", settings.isCompact() ? "1" : "0");
 		x.put("ClientSeed", String.valueOf(settings.getClientSeed()));
 		x.put("Currency", getCurrentCurrencyCode());
+		x.put("ProtocolVersion", "2");
 		return x;
 	}
 
